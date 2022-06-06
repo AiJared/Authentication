@@ -99,3 +99,27 @@ class User(AbstractBaseUser, TrackingModel):
     @property
     def active(self):
         return self.active
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_picture = models.ImageField(_("profile picture"), upload_to="profile_pictures")
+    bio = models.TextField(_("bio"), blank=True, null=True)
+
+    class Meta:
+        abstract = True
+        ordering = ["-id"]
+
+    def __str__(self):
+        return self.user.username
+
+class Administrator(Profile):
+    county = models.CharField(_("county"),
+                                max_length=80, blank=True, null=True)
+    town = models.CharField(_("town"),
+                            max_length=80, blank=True, null=True)
+    estate = models.CharField(_("estate"),
+                                max_length=90, blank=True, null=False)
+    
+    def __str__(self):
+        return self.user.username
+
