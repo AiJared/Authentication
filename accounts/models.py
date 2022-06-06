@@ -123,3 +123,28 @@ class Administrator(Profile):
     def __str__(self):
         return self.user.username
 
+class Student(Profile):
+    institution = models.CharField(_("institution"), 
+                                    max_length=250, blank=True, null=True)
+    school = models.CharField(_("school"), 
+                                max_length=250, blank=True, null=True)
+    department = models.CharField(_("department"), 
+                                    max_length=250, blank=True, null=True)
+    course = models.CharField(_("course"),
+                                max_length=400, blank=True, null=True)
+    year = models.DateTimeField(_("year"),
+                                auto_now_add=True)
+    county = models.CharField(_("county"),
+                                max_length=100, blank=True, null=True)
+    town = models.CharField(_("town"),
+                                max_length=100, blank=True, null=True)
+    address = models.CharField(_("address"),
+                                max_length=250, blank=True, null=True)
+    postal_code = models.CharField(_("postal code"),
+                                    max_length=70, blank=True, null=True)
+    
+    def __srt__(self):
+        return self.user.username
+    
+    class Meta:
+        ordering = ["-id"]
