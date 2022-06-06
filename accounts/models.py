@@ -55,3 +55,47 @@ class CustomUserManager(BaseUserManager):
         )
 
         return user
+
+class User(AbstractBaseUser, TrackingModel):
+    role_choices = (
+        ("administrator", "administrator"),
+        ("student", "student")
+    )
+
+    username = models.CharField(_("username"), max_length=70, unique=True)
+    full_name = models.CharField(_("full name"), max_length=200, blank=False, null=False)
+    email = models.EmailField(_("email"), max_length=250, unique=True)
+    phone = PhoneNumberField(_("phone number"), unique=True, blank=False, null=False)
+    is_admin = models.BooleanField(_("admin"), default=False)
+    is_active = models.BooleanField(_("active"), default=True)
+    is_staff = models.BooleanField(_("staff"), default=False)
+    role = models.CharField(_("role"), max_length=50, choices=role_choices)
+    timestamp = models.DateTimeField(_("timestamp"), auto_now_add=True)
+
+    def get_queryset(self):
+        users = User.objects.all()
+    
+    def __str__(self):
+        return self.username
+
+    object = CustomUserManager
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
+    @property
+    def admin(self):
+        return self.admin
+    
+    @property
+    def staff(self):
+        return self.staff
+    
+    @property
+    def active(self):
+        return self.active
