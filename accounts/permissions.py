@@ -5,12 +5,12 @@ class IsStudent(BasePermission):
         if request.user.is_authentcated:
             return True
         
-        def has_object_permission(self, request, view, obj):
-            if request.user.role == "student":
-                return True
-            if request.method in SAFE_METHODS:
-                return True
-            return False
+    def has_object_permission(self, request, view, obj):
+        if request.user.role == "student":
+            return True
+        if request.method in SAFE_METHODS:
+            return True
+        return False
 
 class IsAdministrator(BasePermission):
     def has_permission(self, request, view):
