@@ -92,3 +92,9 @@ class StudentProfileSerializer(serializers.ModelSerializer):
                     "course", "year", "county", "town"
                     "address", "postal_code")
 
+class AdministratorProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Administrator
+        fields = ("id", "user")
