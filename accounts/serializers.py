@@ -83,3 +83,12 @@ class SetNewPasswordSerializer(serializers.Serializer):
         fields = ("password", "password_confirmation", "token", "uidb64")
 
 
+class StudentProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Student
+        fields = ("id", "institution", "school", "department",
+                    "course", "year", "county", "town"
+                    "address", "postal_code")
+
