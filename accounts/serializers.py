@@ -16,4 +16,18 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ("id", "username", "email", "full_name", "phone", "timestamp")
         read_only_fields = ("id", "timestamp")
-        
+
+class LoginSerializer(TokenObtaibPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+        data["user"] = UserSerializer(self.user).data
+        data["refresh"] = str(refresh)
+        data["access"] = str(refresh.access_token)
+
+        if api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, self.user)
+        return data
+
+class StudentRegistrationSerializer(serializers.ModelSerializer):
+    
