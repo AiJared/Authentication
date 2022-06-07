@@ -30,4 +30,32 @@ class LoginSerializer(TokenObtaibPairSerializer):
         return data
 
 class StudentRegistrationSerializer(serializers.ModelSerializer):
-    
+    password = serializers.CharField(
+        max_length=30, min_length=8, 
+        write_only=True, required=True
+    )
+    email = serializers.EmailField(
+        max_length=130, required=True
+    )
+
+    class Meta:
+        model = User
+        fields = ("username", 
+                "email", "phone", "password")
+        def create(self, validated_data):
+            try:
+                user = User.objects.get(email=validated_data['email'])
+            except ObjectDoesNotExist:
+                if(validated_data["role"] == "Student"):
+                    user = User.objects.create(
+                        username=validated_data["username"],
+                        email=validated_data["email"],
+                        phone=validated_data["phone"],
+                        is_active = False,
+                        role="student"
+                    )
+                    user.set_password(validated_data["password"])
+                    user.save()
+                return user
+
+
