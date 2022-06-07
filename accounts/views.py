@@ -43,3 +43,21 @@ from accounts.serializers import (
 from accounts.sendMails import (
     send_activation_mail, send_password_reset_mail)
 
+class LoginViewSet(ModelViewSet, TokenObtainPairView):
+    """
+    User Login API VIew
+    """
+    serializer_class = LoginSerializer
+    permission_classes = (AllowAny,)
+    http_method_names = ["post"]
+
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+        return Response(serializer.validated_data,
+                        status=status.HTTP_200_OK)
+    
