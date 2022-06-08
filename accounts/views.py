@@ -175,3 +175,44 @@ def PasswordResetTokenCheck(request, uidb64, token):
     #   "token": token,
     # }
     #return render(request, "accounts/passwors_reset.html", context)
+
+class SetNewPasswordAPIView(ModelViewSet):
+    """
+    Set a new Password API View for your Portal Account
+    """
+    serializer_class = SetNewPasswordSerializer
+    permission_classes = (AllowAny,)
+    http_method_names = ['post', 'get']
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            password = request.data["password"]
+            password_confirmation = request.data["password_confirmation"]
+            token = request.data["token"]
+            uidb64 = request.data["uidb64"]
+            if (password and password_confirmation
+                    and password != password_confirmation):
+                raise serializers.ValidationError(
+                    {"Error": ("Passwords don\'t match!")}
+                )
+            else:
+                id = force_str(urlsafe_base64_decode(uidb64))
+                user = User.objects.get(id=id)
+                if not PasswordResetTokenGenerator().check_token(user, token):
+                    raise AuthenticationFailed(
+                        "The Reset Link is Invalid!", 
+                        401
+                    )
+                else:
+                    user.set_password(password)
+                    user.save()
+                    return Response(
+                        {"success": "Password reset successful"},
+                        status=status.HTTP_201_CREATED)
+        except Exception as e:
+            raise AuthenticationFailed(
+                "The Reset Link is Invalid!", 401)
+        return Response(serializer.data)
