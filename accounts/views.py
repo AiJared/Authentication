@@ -133,3 +133,45 @@ def VerifyMail(request):
     
     #context = {}
     #return render(request, "accounts/verify.html", context)
+
+# Password Reset
+class RequestPasswordResetEmail(ModelViewSet):
+    """
+    Password Reset API View
+    The user input the email for password reset 
+    """
+    serializer_class = ResetPasswordEmailRequestSerializer
+    permission_classes = (AllowAny,)
+    http_method_name = ["post",]
+    
+    def create(self, request, *args, **kwargs):
+        self.get_serializer(data=request.data)
+        email = request.data["email"]
+        if User.objects.get(email=email):
+            user = User.objects.get(email=email)
+            if user.is_active:
+                send_password_reset_mail(user, request)
+            return Response(
+                {"Success": "We have emailed you a link to reset your password"},
+                status=status.HTTP_200_OK
+                )
+        return Response({"Success": "Password Reset Link wa sent to your email."})
+
+def PasswordResetTokenCheck(request, uidb64, token):
+    try:
+        id = smart_bytes(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(id=id)
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            messages.info(
+                request,
+                "Password Reset Link is no longer valid, Please request a new one.")
+    except DjangoUnicodeDecodeError as identifier:
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            messages.info(
+                request,
+                "Password in no longer valid, please request a new one.")
+    #context = {
+    #   "uidb64": uidb64,
+    #   "token": token,
+    # }
+    #return render(request, "accounts/passwors_reset.html", context)
