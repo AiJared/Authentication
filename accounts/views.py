@@ -103,3 +103,33 @@ class RefreshViewSet(viewsets.ViewSet, TokenRefreshView):
 
         return Response(serializer.validates_data, status=status.HTTP_200_OK)
 
+def VerifyMail(request):
+    token = request.GET.get('token')
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms='HS256',
+
+        )
+        user = User.objects.get(
+            id=payload['user_id']
+        )
+        if not user.is_active:
+            user.is_active = True
+            user.save()
+            messages.success(request, 
+                            "Account was Successfully Verified.")
+        else:
+            messages.info(request,
+                            """
+                            Your account has already been activated.
+                            You can now login.""")
+    except jwt.ExpiredSignatureError as identifier:
+        messages.warning(request,
+                        "The Activation Link has Expired. Please request another another.")
+    except jwt.exceptions.DecodeError as identifier:
+        messages.warning(request, "Invalid Activation Link!")
+    
+    #context = {}
+    #return render(request, "accounts/verify.html", context)
