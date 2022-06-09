@@ -26,3 +26,15 @@ routes.register('student/profile', StudentProfileAPIView,
                 basename="student-profile")
 routes.register("admin/profile", AdministratorProfileAPIView,
                 basename="admin-profile")
+
+urlpatterns = [
+    path('activate/', VerifyMail, name="email-verification"),
+    path("password-reset/<uidb64>/<token>/",
+        PasswordResetTokenCheck,
+        name="password-reset-token-check"),
+    path('password-reset-successful/',
+        TemplateView.as_view(
+            template_name="accounts/password_reset_success.html"),
+        name="passwordResetSuccess"
+        )
+]
