@@ -1,3 +1,4 @@
+import statistics
 import jwt
 from django.conf import settings
 from django.contrib import messages
@@ -254,3 +255,38 @@ class StudentProfileAPIView(ModelViewSet):
             serializer.data, status=status.HTTP_202_ACCEPTED
         )
 
+class AdministratorProfileAPIView(ModelViewSet):
+    """
+    Administrator Profile API View
+    """
+    serializer_class = AdministratorProfileSerializer
+    permission_classes = [IsAuthenticated, IsAdministrator]
+    http_method_names = ["get", "put"]
+
+    def get_queryset(self):
+        user = self.request.user
+        adminQuery = Administrator.objects.filter(
+            Q(user=user)
+        )
+        return adminQuery
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, many=False)
+        return Response(serializer.data,
+                        status=status.HTTP_200_OK)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        userSerializer = UserSerializer(
+            request.user, data=request.data["user"]
+        )
+        userSerializer.is_valid(raise_exception=True)
+        userSerializer.save()
+        return Response(
+            serializer.data, status=status.HTTP_202_ACCEPTED
+        )
