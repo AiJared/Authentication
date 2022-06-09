@@ -1,0 +1,24 @@
+from posixpath import basename
+from accounts.views import (
+                            AdministratorProfileAPIView, StudentProfileAPIView,
+                            VerifyMail, RequestPasswordResetEmail, SetNewPasswordAPIView,
+                            PasswordResetTokenCheck, LoginViewSet, RefreshViewSet, RegistrationViewSet
+                            )
+from django.contrib.auth import views as auth_views
+from django.urls import path
+from django.views.generic import TemplateView
+from rest_framework.routers import SimpleRouter
+
+app_name = "api"
+routes = SimpleRouter
+
+routes.register('login', LoginViewSet, basename='login')
+routes.register("signup", RegistrationViewSet,
+                basename="registration")
+routes.register('auth/refresh', RefreshViewSet,
+                basename="auth_refresh")
+routes.register('password-reset', RequestPasswordResetEmail,
+                basename="requestPasswordReset")
+routes.register('password-rest-complete', SetNewPasswordAPIView,
+                basename="password-reset-complete")
+# Profile
