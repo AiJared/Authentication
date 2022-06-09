@@ -22,3 +22,7 @@ routes.register('password-reset', RequestPasswordResetEmail,
 routes.register('password-rest-complete', SetNewPasswordAPIView,
                 basename="password-reset-complete")
 # Profile
+routes.register('student/profile', StudentProfileAPIView,
+                basename="student-profile")
+routes.register("admin/profile", AdministratorProfileAPIView,
+                basename="admin-profile")
