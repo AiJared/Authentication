@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.utils.encoding import (DjangoUnicodeDecodeError, force_bytes,
-                                    force_str, force_text, smart_bytes,
+                                    force_str, smart_bytes,
                                     smart_str)
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.decorators.cache import never_cache
