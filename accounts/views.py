@@ -132,8 +132,8 @@ def VerifyMail(request):
     except jwt.exceptions.DecodeError as identifier:
         messages.warning(request, "Invalid Activation Link!")
     
-    #context = {}
-    #return render(request, "accounts/verify.html", context)
+    context = {}
+    return render(request, "accounts/verify.html", context)
 
 # Password Reset
 class RequestPasswordResetEmail(ModelViewSet):
@@ -171,11 +171,11 @@ def PasswordResetTokenCheck(request, uidb64, token):
             messages.info(
                 request,
                 "Password in no longer valid, please request a new one.")
-    #context = {
-    #   "uidb64": uidb64,
-    #   "token": token,
-    # }
-    #return render(request, "accounts/passwors_reset.html", context)
+    context = {
+       "uidb64": uidb64,
+       "token": token,
+     }
+    return render(request, "accounts/passwors_reset.html", context)
 
 class SetNewPasswordAPIView(ModelViewSet):
     """
