@@ -88,8 +88,8 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ("id", "institution", "school", "department",
-                    "course", "year", "county", "town"
+        fields = ("id", "user", "institution", "school", "department",
+                    "course", "year", "county", "town",
                     "address", "postal_code")
 
 class AdministratorProfileSerializer(serializers.ModelSerializer):

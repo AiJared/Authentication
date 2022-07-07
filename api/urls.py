@@ -28,6 +28,7 @@ routes.register("admin/profile", AdministratorProfileAPIView,
                 basename="admin-profile")
 
 urlpatterns = [
+    *routes.urls,
     path('activate/', VerifyMail, name="email-verification"),
     path("password-reset/<uidb64>/<token>/",
         PasswordResetTokenCheck,
