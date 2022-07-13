@@ -124,6 +124,10 @@ class Administrator(Profile):
         return self.user.username
 
 class Student(Profile):
+    first_name = models.CharField(_("first name"),
+                                    max_length=200, blank=False, null=False),
+    last_name = models.CharField(_("last name"),
+                                    max_length=200, blank=False, null=False),
     institution = models.CharField(_("institution"), 
                                     max_length=250, blank=True, null=True)
     school = models.CharField(_("school"), 
